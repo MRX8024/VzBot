@@ -42,9 +42,9 @@ print = print_with_c_locale
 def calibrate_shaper_with_damping(datas, damping_ratio, scv, max_smoothing):
     helper = shaper_calibrate.ShaperCalibrate(printer=None)
 
-    calibration_data = helper.process_accelerometer_data(datas[0])
+    calibration_data = helper.process_accelerometer_data("", datas[0])
     for data in datas[1:]:
-        calibration_data.add_data(helper.process_accelerometer_data(data))
+        calibration_data.add_data(helper.process_accelerometer_data("", data))
 
     calibration_data.normalize_to_frequencies()
 
@@ -143,6 +143,10 @@ def plot_freq_response_with_damping(ax, calibration_data, shapers, performance_s
     pz = calibration_data.psd_z[freqs <= max_freq]
     freqs = freqs[freqs <= max_freq]
 
+    # max_shaper_freq = min(s.freq_bins.max() for s in shapers)
+    # if max_freq > max_shaper_freq:
+    #     max_freq = max_shaper_freq
+
     fontP = matplotlib.font_manager.FontProperties()
     fontP.set_size('x-small')
 
@@ -181,13 +185,14 @@ def plot_freq_response_with_damping(ax, calibration_data, shapers, performance_s
                 shaper_max_accel)
 
         # Get the performance shaper
+        linestyle = 'dotted'
         if shaper.name == performance_shaper:
-            ax2.plot(freqs, shaper.vals, label=label, linestyle='dashdot')
-            performance_shaper_freq = shaper.freq
+            linestyle = 'dashdot'
+            performance_shaper_data = shaper
             performance_shaper_vibr = shaper.vibrs * 100.
-            performance_shaper_vals = shaper.vals
-        else:
-            ax2.plot(freqs, shaper.vals, label=label, linestyle='dotted')
+
+        freq_mask = shaper.freq_bins <= max_freq
+        ax2.plot(shaper.freq_bins[freq_mask], shaper.vals[freq_mask], label=label, linestyle=linestyle)
 
         # Get the low vibration shaper
         if (shaper.vibrs * 100 < lowvib_shaper_vibrs or (shaper.vibrs * 100 == lowvib_shaper_vibrs and shaper_max_accel > lowvib_shaper_accel)) and shaper.smoothing < MAX_SMOOTHING:
@@ -195,20 +200,21 @@ def plot_freq_response_with_damping(ax, calibration_data, shapers, performance_s
             lowvib_shaper = shaper.name
             lowvib_shaper_freq = shaper.freq
             lowvib_shaper_vibrs = shaper.vibrs * 100
-            lowvib_shaper_vals = shaper.vals
+            lowvib_shaper_data = shaper
 
     # User recommendations are added to the legend: one is Klipper's original suggestion that is usually good for performances
     # and the other one is the custom "low vibration" recommendation that looks for a suitable shaper that doesn't have excessive
     # smoothing and that have a lower vibration level. If both recommendation are the same shaper, or if no suitable "low
     # vibration" shaper is found, then only a single line as the "best shaper" recommendation is added to the legend
+    psd_interp_perf = np.interp(performance_shaper_data.freq_bins, freqs, psd)
     if lowvib_shaper != None and lowvib_shaper != performance_shaper and lowvib_shaper_vibrs <= performance_shaper_vibr:
-        ax2.plot([], [], ' ', label="Recommended shaper: %s %.1f Hz" % (performance_shaper.upper(), performance_shaper_freq))
-        ax.plot(freqs, psd * performance_shaper_vals, label='With %s ' % (performance_shaper.upper()), color='cyan')
+        ax2.plot([], [], ' ', label="Recommended shaper: %s %.1f Hz" % (performance_shaper.upper(), performance_shaper_data.freq))
+        ax.plot(performance_shaper_data.freq_bins[freq_mask], psd_interp_perf[freq_mask] * performance_shaper_data.vals[freq_mask], label='With %s ' % (performance_shaper.upper()), color='cyan')
         ax2.plot([], [], ' ', label="Low vibrations shaper: %s %.1f Hz" % (lowvib_shaper.upper(), lowvib_shaper_freq))
-        ax.plot(freqs, psd * lowvib_shaper_vals, label='With %s ' % (lowvib_shaper.upper()), color='yellow')
+        ax.plot(lowvib_shaper_data.freq_bins[freq_mask], psd_interp_perf[freq_mask] * lowvib_shaper_data.vals[freq_mask], label='With %s ' % (lowvib_shaper.upper()), color='yellow')
     else:
-        ax2.plot([], [], ' ', label="Recommended shaper: %s %.1f Hz" % (performance_shaper.upper(), performance_shaper_freq))
-        ax.plot(freqs, psd * performance_shaper_vals, label='With %s ' % (performance_shaper.upper()), color='cyan')
+        ax2.plot([], [], ' ', label="Recommended shaper: %s %.1f Hz" % (performance_shaper.upper(), performance_shaper_data.freq))
+        ax.plot(performance_shaper_data.freq_bins[freq_mask], psd_interp_perf[freq_mask] * performance_shaper_data.vals[freq_mask], label='With %s ' % (performance_shaper.upper()), color='cyan')
 
     ax2.plot([], [], ' ', label="Frequency of the peak ω0 %.3f" % (fr))
     # And the estimated damping ratio is finally added at the end of the legend
