@@ -36,6 +36,19 @@ def is_file_open(filepath):
     return False
 
 
+def wait_file_ready(path):
+    last = None
+    stable = 0
+    while stable < 5:
+        mtime = os.path.getmtime(path)
+        if mtime == last:
+            stable += 1
+        else:
+            stable = 0
+            last = mtime
+        time.sleep(1.)
+
+
 # def get_belts_graph():
 #     current_date = datetime.now().strftime('%Y%m%d_%H%M%S')
 #     lognames = []
@@ -80,8 +93,9 @@ def get_shaper_graph(accel_per_hz=None):
     filename = sorted_files[0]
 
     # Wait for the file handler to be released by Klipper
-    while is_file_open(filename):
-        time.sleep(3)
+    # while is_file_open(filename):
+    #     time.sleep(3)
+    wait_file_ready(filename)
 
     # Extract the tested axis from the filename and rename/move the CSV file to the result folder
     axis = os.path.basename(filename).split('_')[2]
