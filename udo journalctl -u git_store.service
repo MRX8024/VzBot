@@ -1,0 +1,8 @@
+[0;1;31m×[0m git_store.service - Store Klipper config to github
+     Loaded: loaded (]8;;file://orangepi3-lts/etc/systemd/system/git_store.service\/etc/systemd/system/git_store.service]8;;\; [0;1;32menabled[0m; preset: [0;1;32menabled[0m)
+     Active: [0;1;31mfailed[0m (Result: exit-code) since Sat 2026-01-31 05:05:03 MSK; 21h ago
+ Invocation: 2d2ea71902fb4917ab19711edb94b2e9
+    Process: 803 ExecStart=/bin/bash /home/orangepi/printer_data/config/git_store.sh [0;1;31m(code=exited, status=128)[0m
+   Main PID: 803 (code=exited, status=128)
+   Mem peak: 23.6M
+        CPU: 458ms
