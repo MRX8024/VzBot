@@ -1,1 +1,0 @@
-{"method": "linear", "axis": "a", "direction": [1.0, 1.0], "rotation_distance": 40.0, "def_fields": {"current": 2400, "tbl": 0, "toff": 4, "hstrt": 1, "hend": 15, "tpfd": 0, "pwm_autoscale": true, "pwm_autograd": true, "pwm_freq": 0, "pwm_grad": 0, "pwm_ofs": 30, "pwm_reg": 4, "pwm_lim": 12}, "tests": 100, "max_freq": 300}
