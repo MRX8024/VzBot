@@ -1,0 +1,49 @@
+Ripple vibration test, stepper_y, icm20948, head direction 0.707,-0.707, center 117.500,117.500, move time 3.00s
+stepper_ripple_compensation stepper_y: disabled
+speed_model: 425.7, 0.739, -0.0000501
+h1:
+  0.875, 54.9, 0.809, 56.9
+  0.830, 65.1, 0.822, 65.8
+h2:
+  0.551, 260.3, 0.740, 252.9
+  0.728, 292.0, 0.797, 295.3
+h4:
+  1.215, 249.5, 1.239, 247.4
+  1.359, 288.8, 1.085, 290.6
+stepper_ripple_compensation stepper_x: disabled
+speed_model: 425.7, 0.739, -0.0000501
+h1:
+  0.081, 21.7, 0.138, 26.7
+  0.069, 33.5, 0.075, 72.1
+h2:
+  1.487, 269.0, 1.328, 259.9
+  1.568, 299.6, 1.615, 294.1
+h4:
+  0.988, 278.8, 0.745, 249.7
+  1.236, 294.5, 0.916, 290.6
+stepper_ripple_compensation stepper_x1: disabled
+speed_model: 425.7, 0.739, -0.0000501
+h1:
+  0.274, 349.6, 0.292, 326.1
+  0.317, 3.7, 0.320, 7.2
+h2:
+  1.838, 69.4, 1.929, 59.8
+  1.961, 91.6, 2.193, 90.5
+h4:
+  0.862, 264.4, 0.463, 229.7
+  1.267, 269.9, 0.769, 269.4
+stepper_ripple_compensation stepper_y1: disabled
+speed_model: 425.7, 0.739, -0.0000501
+h1:
+  1.144, 126.9, 1.120, 125.3
+  1.186, 140.4, 1.228, 140.4
+h2:
+  1.542, 260.0, 1.486, 254.1
+  1.648, 293.0, 1.659, 291.3
+h4:
+  1.022, 325.4, 0.189, 265.2
+  1.504, 289.8, 0.811, 293.2
+units: mm/s^2
+median, hN: forward moves, median_rev, hN_rev: backward moves, hN: amplitude over the X/Y/Z axes
+speed   rpm  median  median_rev     h1  h1_rev      h2  h2_rev     h3  h3_rev      h4  h4_rev
+   50  75.0  4718.5      2528.3  197.9   215.7  1760.9  1965.6  108.4    52.4  6579.3  3394.4
